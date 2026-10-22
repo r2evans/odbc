@@ -19,11 +19,11 @@ to learn more.
 The odbc package is one piece of the R interface to databases with
 support for ODBC:
 
-![A diagram containing four boxes with arrows linking each pointing left
-to right. The boxes read, in order, "R interface," "driver manager,"
-"ODBC driver," and "DBMS." The left-most box, R interface, contains
-three smaller components, labeled "dbplyr," "DBI," and
-"odbc."](reference/figures/whole-game.png)
+\<img src=“man/figures/whole-game.png” alt=“A diagram containing four
+boxes with arrows linking each pointing left to right. The boxes read,
+in order,”R interface,” “driver manager,” “ODBC driver,” and “DBMS.” The
+left-most box, R interface, contains three smaller components, labeled
+“dbplyr,” “DBI,” and “odbc.”” width=“1489” /\>
 
 Support for a given DBMS is provided by an **ODBC driver**, which
 defines how to interact with that DBMS using the standardized syntax of
@@ -46,15 +46,15 @@ with the driver manager. The odbc package is built on top of the
 [nanodbc](https://nanodbc.github.io/nanodbc/) C++ library. To interface
 with DBMSs using R and odbc:
 
-![A high-level workflow for using the R interface in 3 steps. In step 1,
-configure drivers and data sources, the functions odbcListDrivers() and
-odbcListDataSources() help to interface with the driver manager. In step
-2, the dbConnect() function, called with the first argument odbc(),
-connects to a database using the specified ODBC driver to create a
-connection object "con." Finally, in step 3, that connection object can
-be passed to various functions to retrieve information on database
-structure, iteratively develop queries, and query data
-objects.](reference/figures/r-interface.png)
+\<img src=“man/figures/r-interface.png” alt=“A high-level workflow for
+using the R interface in 3 steps. In step 1, configure drivers and data
+sources, the functions odbcListDrivers() and odbcListDataSources() help
+to interface with the driver manager. In step 2, the dbConnect()
+function, called with the first argument odbc(), connects to a database
+using the specified ODBC driver to create a connection object”con.”
+Finally, in step 3, that connection object can be passed to various
+functions to retrieve information on database structure, iteratively
+develop queries, and query data objects.” width=“1302” /\>
 
 You might also use the [dbplyr package](https://dbplyr.tidyverse.org/)
 to automatically generate SQL from your dplyr code.
@@ -64,6 +64,7 @@ to automatically generate SQL from your dplyr code.
 Install the latest release of odbc from CRAN with the following code:
 
 ``` r
+
 install.packages("odbc")
 ```
 
@@ -71,6 +72,7 @@ To get a bug fix or to use a feature from the development version, you
 can install the development version of odbc from GitHub:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("r-dbi/odbc")
 ```
@@ -81,6 +83,7 @@ To use odbc, begin by creating a database connection, which might look
 something like this:
 
 ``` r
+
 library(DBI)
 
 con <- dbConnect(
@@ -100,6 +103,7 @@ for examples of connecting to a variety of databases.)
 used for listing all existing tables in a database.
 
 ``` r
+
 dbListTables(con)
 ```
 
@@ -108,6 +112,7 @@ read a full table into an R
 [`data.frame()`](https://rdrr.io/r/base/data.frame.html).
 
 ``` r
+
 data <- dbReadTable(con, "flights")
 ```
 
@@ -116,6 +121,7 @@ will write an R [`data.frame()`](https://rdrr.io/r/base/data.frame.html)
 to an SQL table.
 
 ``` r
+
 dbWriteTable(con, "iris", iris)
 ```
 
@@ -123,6 +129,7 @@ dbWriteTable(con, "iris", iris)
 submit a SQL query and fetch the results:
 
 ``` r
+
 df <- dbGetQuery(
   con,
   "SELECT flight, tailnum, origin FROM flights ORDER BY origin"

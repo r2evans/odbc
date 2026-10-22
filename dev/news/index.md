@@ -2,10 +2,118 @@
 
 ## odbc (development version)
 
-- odbcConnectionColumns(), odbcConnectionIcon(), and
-  odbcConnectionActions() are now fully deprecated. Use
-  DBI::dbListFields() instead of odbcConnectionColumns()
-  ([\#699](https://github.com/r-dbi/odbc/issues/699)). \# odbc 1.6.4
+- [`dbExistsTable()`](https://dbi.r-dbi.org/reference/dbExistsTable.html)
+  no longer treats `_` as a wildcard on SQL Server.
+
+## odbc 1.7.2
+
+CRAN release: 2026-10-02
+
+- odbc now requires R 4.2.0.
+
+- Fixed silent truncation of `BINARY`/`VARBINARY` data larger than 1024
+  bytes when the driver does not report the remaining data length
+  (`SQL_NO_TOTAL`) during chunked retrieval, as seen with the
+  Databricks/Simba Spark driver
+  ([\#1024](https://github.com/r-dbi/odbc/issues/1024)).
+
+## odbc 1.7.1
+
+CRAN release: 2026-09-16
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  driver auto-detection now recognizes the Windows driver name
+  `Databricks ODBC Driver`.
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  now sets `DefaultStringColumnLength` to 65535 by default. The driver
+  reports `STRING` columns as `VARCHAR(DefaultStringColumnLength)` and
+  silently truncates longer values; its own default of 255 caused string
+  data to be cut off after roughly 1000 characters. Pass
+  `defaultStringColumnLength` to
+  [`dbConnect()`](https://odbc.r-dbi.org/dev/reference/dbConnect-OdbcDriver-method.md)
+  to override ([\#1023](https://github.com/r-dbi/odbc/issues/1023)).
+
+- Update vendored cctz to current upstream, including local build
+  compatibility fixes retained for R package and Windows builds.
+
+- Numeric connection string arguments no longer fall back to scientific
+  notation in `build_connection_string()`, which avoids malformed driver
+  attributes such as `DefaultStringColumnLength`
+  ([\#934](https://github.com/r-dbi/odbc/issues/934)).
+
+## odbc 1.7.0
+
+CRAN release: 2026-05-09
+
+### Databricks
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  now supports workload identity federation
+  ([\#1002](https://github.com/r-dbi/odbc/issues/1002)).
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  now detects service principal credentials when running on Posit
+  Connect ([@tnederlof](https://github.com/tnederlof),
+  [\#931](https://github.com/r-dbi/odbc/issues/931)).
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  now has improved performance when the `useNativeQuery` connection
+  attribute is set to `true`
+  ([\#998](https://github.com/r-dbi/odbc/issues/998)).
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  driver location discovery now handles the new OEM driver for macOS
+  ([\#994](https://github.com/r-dbi/odbc/issues/994)).
+
+### Snowflake
+
+- [`odbc::snowflake()`](https://odbc.r-dbi.org/dev/reference/snowflake.md)
+  now uses the `snowflakeauth` package to resolve connection parameters
+  from Snowflake `connections.toml` and `config.toml` files under the
+  hood, which improves support for non-OAuth authenticators (including
+  “externalbrowser” authentication), adds support for the `host` field,
+  allows multiple named connections (via the new `connection_name`
+  argument), and generally improves compatibility with the Snowflake CLI
+  and Python ecosystem
+  ([\#1000](https://github.com/r-dbi/odbc/issues/1000)).
+
+- `sf_private_key` is now robust to newline character ending
+  ([\#997](https://github.com/r-dbi/odbc/issues/997)).
+
+### Miscellaneous
+
+- SQL Server: `POSIXct` data can now be written to `DATETIMEOFFSET`
+  targets ([\#985](https://github.com/r-dbi/odbc/issues/985)).
+
+- [`odbcConnectionColumns()`](https://odbc.r-dbi.org/dev/reference/odbcConnectionColumns.md),
+  [`odbcConnectionIcon()`](https://odbc.r-dbi.org/dev/reference/odbcConnectionIcon.md),
+  and
+  [`odbcConnectionActions()`](https://odbc.r-dbi.org/dev/reference/odbcConnectionActions.md)
+  are now fully deprecated. Use
+  [`DBI::dbListFields()`](https://dbi.r-dbi.org/reference/dbListFields.html)
+  instead of
+  [`odbcConnectionColumns()`](https://odbc.r-dbi.org/dev/reference/odbcConnectionColumns.md)
+  ([\#986](https://github.com/r-dbi/odbc/issues/986)).
+
+- Fix crash when interrupting execution using Ctrl-c
+  ([\#977](https://github.com/r-dbi/odbc/issues/977)).
+
+- Fix R error/crash when the `params` arguments are different lengths
+  and one is `POSIXt`
+  ([\#984](https://github.com/r-dbi/odbc/issues/984)). This forces all
+  bound-parameters to be length 1 or the same length (i.e., tidyverse
+  recycling rules).
+
+- [`databricks()`](https://odbc.r-dbi.org/dev/reference/databricks.md)
+  and [`snowflake()`](https://odbc.r-dbi.org/dev/reference/snowflake.md)
+  now correctly error (instead of warning) when the driver configuration
+  file is not found
+  ([\#1001](https://github.com/r-dbi/odbc/issues/1001)).
+
+## odbc 1.6.4
+
+CRAN release: 2025-12-06
 
 - Fix writing of \[R\] date/time values that have integer storage.
   ([\#952](https://github.com/r-dbi/odbc/issues/952))
