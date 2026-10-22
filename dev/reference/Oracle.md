@@ -13,11 +13,6 @@ it does not look through synonyms.
 Query, rather than use `SQLColumns` ODBC API, since we bind a `BIGINT`
 to one of the column results and Oracle's OEM driver can't handle it.
 
-### [`odbcConnectionColumns()`](https://odbc.r-dbi.org/dev/reference/odbcConnectionColumns.md)
-
-Defined explicitly (rather than inherited) to avoid an ambiguous S4
-dispatch
-
 ## Usage
 
 ``` r

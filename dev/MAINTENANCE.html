@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">odbc</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.7.2.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.6.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="logo.png" class="logo" alt=""><h1>NA</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-dbi/odbc/blob/master/MAINTENANCE.md" class="external-link"><code>MAINTENANCE.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-dbi/odbc/blob/main/MAINTENANCE.md" class="external-link"><code>MAINTENANCE.md</code></a></small>
     </div>
 
 
@@ -46,28 +46,6 @@
 <h2 id="known-outstanding-issues">Known outstanding issues<a class="anchor" aria-label="anchor" href="#known-outstanding-issues"></a></h2>
 <p>The “Developing odbc” vignette at <code><a href="articles/develop.html">vignette("develop")</a></code> contains instructions on running the tests locally, which is important to make the feedback loop shorter.</p>
 <p>The hardest part of maintaining odbc is often an issue only occurs with a specific database, and setting up the environment for that database usually takes a non-trivial amount of time.</p>
-</div>
-<div class="section level2">
-<h2 id="vendored-cctz">Vendored cctz<a class="anchor" aria-label="anchor" href="#vendored-cctz"></a></h2>
-<p>The vendored copy in <code>src/cctz</code> was last updated against <code>google/cctz</code> commit <code>00fc77b843504f231f89c13eff86327c444094e8</code>.</p>
-<p>Relative to that upstream commit, the odbc package intentionally keeps the following deltas for R package inclusion:</p>
-<ul><li>Upstream <code>.github/</code> is omitted from the vendored copy.</li>
-<li>Upstream <code>testdata/</code> is omitted from the vendored copy.</li>
-<li>
-<code>src/cctz/Makefile</code> is patched so recursive builds from <code>src/Makevars</code> keep the cctz include path and PIC flags required for R shared-library builds.</li>
-<li>
-<code>src/cctz/Makefile</code> adds <code>time_zone_name_win.o</code> on Windows because upstream now ships <code>src/time_zone_name_win.cc</code>, and omitting it breaks Windows linking.</li>
-<li>
-<code>src/cctz/Makefile</code> sets <code>_WIN32_WINNT</code>/<code>WINVER</code> to <code>0x0601</code> on Windows. <code>src/time_zone_name_win.cc</code> uses <code>WC_ERR_INVALID_CHARS</code> and <code>GetDynamicTimeZoneInformation</code>, which the mingw-w64 headers declare only at API level <code>0x0600</code>+. Rtools40 (R 4.1) defaults to <code>0x502</code>, so without this the file does not compile there.</li>
-<li>
-<code>src/cctz/Makefile</code> add <code>-DNDEBUG</code> to <code>CPPFLAGS</code>.</li>
-<li>
-<code>src/cctz/src/time_zone_fixed.cc</code> keeps odbc-specific fixed-offset zone names based on <code>Etc/GMT</code> rather than upstream <code>Fixed/UTC</code>, matching odbc timestamp offset behavior.</li>
-<li>
-<code>src/cctz/src/time_zone_fixed.cc</code> also retains local formatting behavior for fixed offsets, including compact hour formatting, omission of zero minute/second components, and a runtime error in place of the upstream assert.</li>
-<li>
-<code>src/cctz/src/time_zone_format.cc</code> keeps historical odbc compatibility patches for Windows/MinGW-era behavior: forcing <code>HAS_STRPTIME</code>, disabling the <code>tm_year</code> saturation branch for large positive values, and bypassing the <code><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strptime()</a></code> call in <code>ParseTM()</code>.</li>
-</ul><p>When updating cctz again, compare the vendored tree against upstream and carry these deltas forward only if they are still required by odbc.</p>
 </div>
 <div class="section level2">
 <h2 id="future-directions">Future directions<a class="anchor" aria-label="anchor" href="#future-directions"></a></h2>

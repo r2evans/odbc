@@ -12,8 +12,9 @@ odbc sets up small example database deployments.
 
 For the most part, this vignette assumes a MacOS system with aarch64
 (e.g. M1 or M2) architecture. For Linux example code, see
-`.github/workflows/db.yaml`, and for Windows, see
-`.github/workflows/db-windows.yml`.
+[`.github/workflows/db.yaml`](https://github.com/r-dbi/odbc/blob/main/.github/workflows/db.yaml),
+and for Windows, see
+[`.github/workflows/db-windows.yml`](https://github.com/r-dbi/odbc/blob/main/.github/workflows/db-windows.yml).
 
 ## Posit Professional Drivers
 
@@ -195,8 +196,8 @@ navigate to `Settings > General` and ensure that
 `Use Rosetta for x86/amd64 emulation on Apple Silicon` is checked.
 
 To connect via odbc, we need to pass the UID and PWD via the connection
-string; configuring those arguments via `odbc.ini` is not permitted
-(`https://stackoverflow.com/questions/42387084/sql-server-odbc-driver-linux-username`).
+string; configuring those arguments via `odbc.ini` is [not
+permitted](https://stackoverflow.com/questions/42387084/sql-server-odbc-driver-linux-username).
 With the container deployed as above, the connection arguments would be:
 
 ``` r
@@ -278,7 +279,7 @@ A huge pain.
 Getting an Oracle database booted up in a Docker container on MacOS is a
 bit challenging. First, you’ll build the container image yourself from
 the official Oracle source using the instructions
-[here](https://simonpcouch.com/blog/2024-03-14-oracle/). Once you’ve
+[here](https://www.simonpcouch.com/blog/2024-03-14-oracle/). Once you’ve
 finished building the image, run it with:
 
 ``` shell

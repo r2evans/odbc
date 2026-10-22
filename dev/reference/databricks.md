@@ -5,45 +5,22 @@ ODBC driver](https://www.databricks.com/spark/odbc-drivers-download).
 
 In particular, the custom
 [`dbConnect()`](https://odbc.r-dbi.org/dev/reference/dbConnect-OdbcDriver-method.md)
-method for the Databricks ODBC driver implements a variant of
-Databricks's [unified
-authentication](https://docs.databricks.com/aws/en/dev-tools/auth/unified-auth)
-model when no `uid` or `pwd` is supplied, checking for ambient
-credentials in the following order:
-
-- Viewer-based or service principal credentials supplied by Posit
-  Connect (requires the connectcreds package).
-
-- Personal access tokens.
-
-- Workload identity federation.
-
-- OAuth machine-to-machine credentials.
-
-- OAuth user-to-machine credentials suplied via Posit Workbench or the
-  Databricks CLI on desktop.
-
-This aims to provide broad compatibility between odbc and the standard
-environment variables used by Databricks SDKs in R and other languages.
+method for the Databricks ODBC driver implements a subset of the
+[Databricks client unified
+authentication](https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication)
+model, with support for personal access tokens, OAuth machine-to-machine
+credentials, and OAuth user-to-machine credentials supplied via Posit
+Workbench or the Databricks CLI on desktop. It can also detect
+viewer-based credentials on Posit Connect if the connectcreds package is
+installed. All of these credentials are detected automatically if
+present using [standard environment
+variables](https://docs.databricks.com/en/dev-tools/auth.html#environment-variables-and-fields-for-client-unified-authentication).
 
 In addition, on macOS platforms, the
 [`dbConnect()`](https://odbc.r-dbi.org/dev/reference/dbConnect-OdbcDriver-method.md)
 method will check for irregularities with how the driver is configured,
 and attempt to fix in-situ, unless the `odbc.no_config_override`
 environment variable is set.
-
-### String truncation
-
-The Databricks ODBC driver reports `STRING` columns to clients as
-`VARCHAR(n)`, where `n` is the value of its `DefaultStringColumnLength`
-connection attribute. This reported size determines the allocated string
-buffer, and the driver can silently truncate values that do not fit.
-Because the driver's own default of 255 is easy to hit in practice,
-[`dbConnect()`](https://odbc.r-dbi.org/dev/reference/dbConnect-OdbcDriver-method.md)
-sets this attribute to 65535 by default. Pass
-`defaultStringColumnLength` to
-[`dbConnect()`](https://odbc.r-dbi.org/dev/reference/dbConnect-OdbcDriver-method.md)
-to choose another limit.
 
 ## Usage
 
@@ -87,13 +64,11 @@ dbConnect(
 
 - useNativeQuery:
 
-  Suppress the driver's conversion from ANSI SQL 92 to HiveSQL. When set
-  to true, we also set the following related flags:
-  `EnableNativeParameterizedQuery`, and
-  `PopulateParametersForNativeQuery`. The default (`TRUE`), gives
-  greater performance but could cause issues with paramterised queries
-  (and hence
-  [`dbWriteTable()`](https://dbi.r-dbi.org/reference/dbWriteTable.html)).
+  Suppress the driver's conversion from ANSI SQL 92 to HiveSQL? The
+  default (`TRUE`), gives greater performance but means that
+  paramterised queries (and hence
+  [`dbWriteTable()`](https://dbi.r-dbi.org/reference/dbWriteTable.html))
+  do not work.
 
 - driver:
 
@@ -124,13 +99,12 @@ DBI::dbConnect(
   httpPath = "sql/protocolv1/o/4425955464597947/1026-023828-vn51jugj"
 )
 
-# Use credentials from the viewer or a service principal (when possible) in
-# a Shiny app deployed to Posit Connect.
+# Use credentials from the viewer (when possible) in a Shiny app
+# deployed to Posit Connect.
 library(connectcreds)
 server <- function(input, output, session) {
   conn <- DBI::dbConnect(
     odbc::databricks(),
-    workspace = "https://example.cloud.databricks.com",
     httpPath = "sql/protocolv1/o/4425955464597947/1026-023828-vn51jugj"
   )
 }
